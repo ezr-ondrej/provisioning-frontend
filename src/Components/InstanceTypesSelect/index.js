@@ -49,12 +49,12 @@ const InstanceTypesSelect = () => {
     return types.map((instanceType) => (
       <SelectOption
         aria-label={'Instance Type item'}
-        key={instanceType.id}
-        description={`${instanceType.cores} cores | 
-          ${instanceType.vcpus} vCPU | 
+        key={`${instanceType.id}_${instanceType.architecture}`}
+        description={`${instanceType.cores} cores |
+          ${instanceType.vcpus} vCPU |
           ${(parseFloat(instanceType.memory_mib) / 1024).toFixed(
             1
-          )} GiB memory | 
+          )} GiB memory |
           ${
             instanceType.storage_gb > 0
               ? instanceType.storage_gb + ' GB storage | '

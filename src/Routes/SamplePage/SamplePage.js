@@ -118,11 +118,12 @@ const SamplePage = () => {
             <Button variant="primary" onClick={() => setWizardModal(true)}>
               Open Wizard
             </Button>
-            <ProvisioningWizard
-              isOpen={isWizardOpen}
-              onClose={() => setWizardModal(false)}
-              image={chosenImage}
-            />
+            {isWizardOpen && (
+              <ProvisioningWizard
+                isOpen={isWizardOpen}
+                onClose={() => setWizardModal(false)}
+                image={chosenImage}
+              />)}
           </StackItem>
         </Stack>
       </Main>

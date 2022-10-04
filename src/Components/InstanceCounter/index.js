@@ -1,7 +1,7 @@
 import React from 'react';
 import { Slider } from '@patternfly/react-core';
 import { useWizardContext } from '../Common/WizardContext';
-const MAX_INSTANCES = 45;
+const MAX_INSTANCES = 20;
 const MIN_INSTANCES = 1;
 
 const InstanceCounter = () => {
@@ -11,15 +11,10 @@ const InstanceCounter = () => {
     if (inputValue === undefined) {
       newValue = Number(value);
     } else {
-      if (inputValue > MAX_INSTANCES) {
-        newValue = MAX_INSTANCES;
-        setLocalInputValue(MAX_INSTANCES);
-      } else if (inputValue < MIN_INSTANCES) {
-        newValue = MIN_INSTANCES;
-        setLocalInputValue(MIN_INSTANCES);
-      } else {
-        newValue = Math.floor(inputValue);
-      }
+      newValue = Math.max(MIN_INSTANCES, Math.min(inputValue, MAX_INSTANCES));
+      newValue = Math.floor(inputValue);
+
+      setLocalInputValue(newValue);
     }
     setWizardContext((prevState) => ({
       ...prevState,

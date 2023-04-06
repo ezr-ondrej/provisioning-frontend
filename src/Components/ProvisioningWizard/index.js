@@ -9,6 +9,9 @@ import CustomFooter from './CustomFooter';
 import defaultSteps from './steps';
 import './steps/Pubkeys/pubkeys.scss';
 
+// for beta
+import SourcesWizard, { sourcesData } from './SourcesWizard.beta';
+
 const DEFAULT_STEP_VALIDATION = {
   sshStep: false,
   awsStep: false,
@@ -19,6 +22,13 @@ const ProvisioningWizard = ({ isOpen, onClose, image, ...props }) => {
   const [stepValidation, setStepValidation] = React.useState(DEFAULT_STEP_VALIDATION);
   const [isConfirming, setConfirming] = React.useState(false);
   const [successfulLaunch, setLaunchSuccess] = React.useState();
+
+  const { isLoading, sources } = sourcesData(image.provider);
+
+  if (isLoading || !isOpen) return null;
+  if (sources && sources.length <= 0) {
+    return <SourcesWizard provider={image.provider} onClose={onClose} />;
+  }
 
   const onCustomClose = () => {
     setConfirming(false);
@@ -50,20 +60,18 @@ const ProvisioningWizard = ({ isOpen, onClose, image, ...props }) => {
 
   return isOpen ? (
     <WizardProvider>
-      <APIProvider>
-        <Wizard
-          {...props}
-          title="Launch"
-          description={`Launch image ${image.name}`}
-          steps={steps}
-          isOpen
-          onClose={onWizardClose}
-          onNext={onNext}
-          className={'provisioning'}
-          footer={<CustomFooter />}
-        />
-        <ConfirmModal isOpen={isConfirming} onConfirm={onCustomClose} onCancel={() => setConfirming(false)} />
-      </APIProvider>
+      <Wizard
+        {...props}
+        title="Launch"
+        description={`Launch image ${image.name}`}
+        steps={steps}
+        isOpen
+        onClose={onWizardClose}
+        onNext={onNext}
+        className={'provisioning'}
+        footer={<CustomFooter />}
+      />
+      <ConfirmModal isOpen={isConfirming} onConfirm={onCustomClose} onCancel={() => setConfirming(false)} />
     </WizardProvider>
   ) : null;
 };
@@ -79,4 +87,12 @@ ProvisioningWizard.propTypes = {
   }).isRequired,
 };
 
-export default ProvisioningWizard;
+const ProvisioningWizardWrapper = (props) => (
+  <APIProvider>
+    <ProvisioningWizard {...props} />
+  </APIProvider>
+);
+
+ProvisioningWizardWrapper.propTypes = ProvisioningWizard.propTypes;
+
+export default ProvisioningWizardWrapper;
